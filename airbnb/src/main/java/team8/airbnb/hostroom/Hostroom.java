@@ -1,17 +1,15 @@
-package team8.airbnb.entity;
+package team8.airbnb.hostroom;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import team8.airbnb.hostroomitems.HostroomItems;
+import team8.airbnb.review.Review;
+import team8.airbnb.user.User;
 
 @Entity
 @Setter
@@ -25,6 +23,7 @@ public class Hostroom {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "host_id")
+  @JsonBackReference
   private User host;
 
   @Column(name = "hostroom_name")
@@ -74,5 +73,18 @@ public class Hostroom {
 
   @Column(name = "is_reserved")
   private boolean isReserved;
-}
 
+  @Column(name = "latitude")
+  private Double latitude;
+
+  @Column(name = "longitude")
+  private Double longitude;
+
+  @OneToMany(mappedBy = "hostroom", fetch = FetchType.LAZY)
+  @JsonManagedReference
+  private List<Review> reviews;
+
+  @OneToMany(mappedBy = "hostroom", fetch = FetchType.LAZY)
+  @JsonManagedReference
+  private List<HostroomItems> hostroomItems;
+}
