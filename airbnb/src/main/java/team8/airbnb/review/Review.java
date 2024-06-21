@@ -1,14 +1,11 @@
-package team8.airbnb.entity;
+package team8.airbnb.review;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import team8.airbnb.hostroom.Hostroom;
+import team8.airbnb.user.User;
 
 @Entity
 @Getter
@@ -19,15 +16,17 @@ public class Review {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "hostroom_id")
+  @JsonBackReference
   private Hostroom hostroom;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "guest_id")
+  @JsonBackReference
   private User user;
 
-  @Column(name = "context")
+  @Column(name = "content")
   private String content;
 
   @Column(name = "rating")
