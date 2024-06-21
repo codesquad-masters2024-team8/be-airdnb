@@ -3,7 +3,7 @@ package team8.airbnb.repository;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import team8.airbnb.entity.User;
+import team8.airbnb.user.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
