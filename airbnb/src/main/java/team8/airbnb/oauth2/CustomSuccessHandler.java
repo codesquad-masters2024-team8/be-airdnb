@@ -42,6 +42,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     JWT 토큰을 Authorization 헤더에 추가
      */
     response.addHeader("Authorization", "Bearer " + token);
-    response.sendRedirect("http://localhost:8080/success");
+    response.sendRedirect("http://localhost:8080/api/hostrooms");
   }
 }
