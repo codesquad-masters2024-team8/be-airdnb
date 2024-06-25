@@ -1,6 +1,5 @@
 package team8.airbnb.hostroom;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,67 +12,35 @@ import team8.airbnb.user.UserService;
 @Service
 public class HostroomService {
 
-  @Autowired
   private HostroomRepository hostroomRepository;
-
-  @Autowired
   private UserService userService;
-
-  @Autowired
   private JwtUtil jwtUtil;
 
-  public Hostroom createHostroom(String token, String hostroomName, int bedNumber,
-      int restroomNumber,
-      int bathroomNumber, String region, int limitedAdults, int limitedChildren,
-      int limitedInfants, int limitedPet, boolean isPet, boolean isInstantbook,
-      boolean isSelfcheckin, int price, LocalDateTime checkinDate, LocalDateTime checkoutDate) {
+  @Autowired
+  public HostroomService(HostroomRepository hostroomRepository, UserService userService,
+      JwtUtil jwtUtil) {
+    this.hostroomRepository = hostroomRepository;
+    this.userService = userService;
+    this.jwtUtil = jwtUtil;
+  }
+
+  public Hostroom createHostroom(String token, HostroomRequest hostroomRequest) {
 
     String username = jwtUtil.getUsernameFromToken(token);
 
     User host = userService.findByUsername(username);
 
     Hostroom hostroom = new Hostroom();
+    setHostroomDetails(hostroom, hostroomRequest);
     hostroom.setHost(host);
-    hostroom.setHostroomName(hostroomName);
-    hostroom.setBedNumber(bedNumber);
-    hostroom.setRestroomNumber(restroomNumber);
-    hostroom.setBathroomNumber(bathroomNumber);
-    hostroom.setRegion(region);
-    hostroom.setLimitedAdults(limitedAdults);
-    hostroom.setLimitedChildren(limitedChildren);
-    hostroom.setLimitedInfants(limitedInfants);
-    hostroom.setLimitedPet(limitedPet);
-    hostroom.setPet(isPet);
-    hostroom.setInstantbook(isInstantbook);
-    hostroom.setSelfcheckin(isSelfcheckin);
-    hostroom.setPrice(price);
-    hostroom.setCheckinDate(checkinDate);
-    hostroom.setCheckoutDate(checkoutDate);
     hostroom.setReserved(false);
     return hostroomRepository.save(hostroom);
   }
 
-  public Hostroom updateHostroom(Long id, String hostroomName, int bedNumber, int restroomNumber,
-      int bathroomNumber, String region, int limitedAdults, int limitedChildren,
-      int limitedInfants, int limitedPet, boolean isPet, boolean isInstantbook,
-      boolean isSelfcheckin, int price, LocalDateTime checkinDate, LocalDateTime checkoutDate) {
+  public Hostroom updateHostroom(Long id, HostroomRequest hostroomRequest) {
     Hostroom hostroom = hostroomRepository.findById(id)
         .orElseThrow(() -> new RuntimeException("Hostroom not found with id: " + id));
-    hostroom.setHostroomName(hostroomName);
-    hostroom.setBedNumber(bedNumber);
-    hostroom.setRestroomNumber(restroomNumber);
-    hostroom.setBathroomNumber(bathroomNumber);
-    hostroom.setRegion(region);
-    hostroom.setLimitedAdults(limitedAdults);
-    hostroom.setLimitedChildren(limitedChildren);
-    hostroom.setLimitedInfants(limitedInfants);
-    hostroom.setLimitedPet(limitedPet);
-    hostroom.setPet(isPet);
-    hostroom.setInstantbook(isInstantbook);
-    hostroom.setSelfcheckin(isSelfcheckin);
-    hostroom.setPrice(price);
-    hostroom.setCheckinDate(checkinDate);
-    hostroom.setCheckoutDate(checkoutDate);
+    setHostroomDetails(hostroom, hostroomRequest);
     return hostroomRepository.save(hostroom);
   }
 
@@ -97,31 +64,6 @@ public class HostroomService {
     return hostroomRepository.findAll();
   }
 
-  public HostroomResponse convertToDto(Hostroom hostroom) {
-    HostroomResponse response = new HostroomResponse();
-    response.setId(hostroom.getId());
-    response.setHostroomName(hostroom.getHostroomName());
-    response.setBedNumber(hostroom.getBedNumber());
-    response.setRestroomNumber(hostroom.getRestroomNumber());
-    response.setBathroomNumber(hostroom.getBathroomNumber());
-    response.setRegion(hostroom.getRegion());
-    response.setLimitedAdults(hostroom.getLimitedAdults());
-    response.setLimitedChildren(hostroom.getLimitedChildren());
-    response.setLimitedInfants(hostroom.getLimitedInfants());
-    response.setLimitedPet(hostroom.getLimitedPet());
-    response.setPrice(hostroom.getPrice());
-    response.setCheckinDate(hostroom.getCheckinDate());
-    response.setCheckoutDate(hostroom.getCheckoutDate());
-    response.setLatitude(hostroom.getLatitude());
-    response.setLongitude(hostroom.getLongitude());
-    response.setHostroomItems(hostroom.getHostroomItems());
-    response.setSelfcheckin(hostroom.isSelfcheckin());
-    response.setReserved(hostroom.isReserved());
-    response.setInstantbook(hostroom.isInstantbook());
-    response.setPet(hostroom.isPet());
-    response.setReviews(hostroom.getReviews());
-    return response;
-  }
 
   public List<MapPointResponse> getAllposition() {
     List<Hostroom> hostrooms = getAllHostrooms();
@@ -137,5 +79,23 @@ public class HostroomService {
     }
 
     return MapPointResponses;
+  }
+
+  private void setHostroomDetails(Hostroom hostroom, HostroomRequest hostroomRequest) {
+    hostroom.setHostroomName(hostroomRequest.getHostroomName());
+    hostroom.setBedNumber(hostroomRequest.getBedNumber());
+    hostroom.setRestroomNumber(hostroomRequest.getRestroomNumber());
+    hostroom.setBathroomNumber(hostroomRequest.getBathroomNumber());
+    hostroom.setRegion(hostroomRequest.getRegion());
+    hostroom.setLimitedAdults(hostroomRequest.getLimitedAdults());
+    hostroom.setLimitedChildren(hostroomRequest.getLimitedChildren());
+    hostroom.setLimitedInfants(hostroomRequest.getLimitedInfants());
+    hostroom.setLimitedPet(hostroomRequest.getLimitedPet());
+    hostroom.setPet(hostroomRequest.isPet());
+    hostroom.setInstantbook(hostroomRequest.isInstantbook());
+    hostroom.setSelfcheckin(hostroomRequest.isSelfcheckin());
+    hostroom.setPrice(hostroomRequest.getPrice());
+    hostroom.setCheckinDate(hostroomRequest.getCheckinDate());
+    hostroom.setCheckoutDate(hostroomRequest.getCheckoutDate());
   }
 }

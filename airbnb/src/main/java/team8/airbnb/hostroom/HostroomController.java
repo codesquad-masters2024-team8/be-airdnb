@@ -29,47 +29,13 @@ public class HostroomController {
       @RequestBody HostroomRequest hostroomRequest) {
 
     String jwtToken = token.substring(7);
-    return hostroomService.createHostroom(
-        jwtToken,
-        hostroomRequest.getHostroomName(),
-        hostroomRequest.getBedNumber(),
-        hostroomRequest.getRestroomNumber(),
-        hostroomRequest.getBathroomNumber(),
-        hostroomRequest.getRegion(),
-        hostroomRequest.getLimitedAdults(),
-        hostroomRequest.getLimitedChildren(),
-        hostroomRequest.getLimitedInfants(),
-        hostroomRequest.getLimitedPet(),
-        hostroomRequest.isPet(),
-        hostroomRequest.isInstantbook(),
-        hostroomRequest.isSelfcheckin(),
-        hostroomRequest.getPrice(),
-        hostroomRequest.getCheckinDate(),
-        hostroomRequest.getCheckoutDate()
-    );
+    return hostroomService.createHostroom(jwtToken, hostroomRequest);
   }
 
   @PutMapping("/{id}")
   public Hostroom updateHostroom(@PathVariable Long id,
       @RequestBody HostroomRequest hostroomRequest) {
-    return hostroomService.updateHostroom(
-        id,
-        hostroomRequest.getHostroomName(),
-        hostroomRequest.getBedNumber(),
-        hostroomRequest.getRestroomNumber(),
-        hostroomRequest.getBathroomNumber(),
-        hostroomRequest.getRegion(),
-        hostroomRequest.getLimitedAdults(),
-        hostroomRequest.getLimitedChildren(),
-        hostroomRequest.getLimitedInfants(),
-        hostroomRequest.getLimitedPet(),
-        hostroomRequest.isPet(),
-        hostroomRequest.isInstantbook(),
-        hostroomRequest.isSelfcheckin(),
-        hostroomRequest.getPrice(),
-        hostroomRequest.getCheckinDate(),
-        hostroomRequest.getCheckoutDate()
-    );
+    return hostroomService.updateHostroom(id, hostroomRequest);
   }
 
   @DeleteMapping("/{id}")
@@ -79,9 +45,9 @@ public class HostroomController {
   }
 
   @GetMapping("/{id}")
-  public HostroomResponse getHostroomById(@PathVariable Long id) {
+  public Hostroom getHostroomById(@PathVariable Long id) {
     Hostroom hostroom = hostroomService.getHostroomById(id);
-    return hostroomService.convertToDto(hostroom);
+    return hostroom;
   }
 
   @GetMapping
