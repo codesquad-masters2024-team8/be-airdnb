@@ -1,19 +1,13 @@
 package team8.airbnb.reservedroom;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import team8.airbnb.hostroom.Hostroom;
 import team8.airbnb.user.User;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Setter
@@ -47,8 +41,38 @@ public class Reservedroom {
   @Column(name = "checkout_date")
   private LocalDateTime checkoutDate;
 
-  // hostroom_id
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "hostroom_id")
   private Hostroom hostroom;
+
+  // 기본 생성자
+  public Reservedroom() {}
+
+  // 모든 필드를 포함하는 생성자
+  public Reservedroom(User guest, int adults, int children, int infants, int totalPrice,
+      LocalDateTime checkinDate, LocalDateTime checkoutDate, Hostroom hostroom) {
+    this.guest = guest;
+    this.adults = adults;
+    this.children = children;
+    this.infants = infants;
+    this.totalPrice = totalPrice;
+    this.checkinDate = checkinDate;
+    this.checkoutDate = checkoutDate;
+    this.hostroom = hostroom;
+  }
+
+  @Override
+  public String toString() {
+    return "Reservedroom{" +
+        "id=" + id +
+        ", guest=" + (guest != null ? guest.getId() : null) +
+        ", adults=" + adults +
+        ", children=" + children +
+        ", infants=" + infants +
+        ", totalPrice=" + totalPrice +
+        ", checkinDate=" + checkinDate +
+        ", checkoutDate=" + checkoutDate +
+        ", hostroom=" + (hostroom != null ? hostroom.getId() : null) +
+        '}';
+  }
 }
